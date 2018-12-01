@@ -122,4 +122,83 @@ public class Time {
             return false;
         }
     }
+    public bool IncrementTimyBySeconds(int deltaS) {
+        int newSecond = second + deltaS;
+        int newMinute = minute + newSecond / 60;
+        int newHour = hour + newMinute / 60;
+
+        second = newSecond % 60;
+        minute = newMinute % 60;
+        hour = newHour % 24;
+
+        //if there's more than 24 hours, then the day should increment
+        return newHour / 24 > 0;
+    }
+    public bool IncrementTimyBySeconds(int deltaS, Action onDayChange) {
+        int newSecond = second + deltaS;
+        int newMinute = minute + newSecond / 60;
+        int newHour = hour + newMinute / 60;
+
+        second = newSecond % 60;
+        minute = newMinute % 60;
+        hour = newHour % 24;
+
+        //if there's more than 24 hours, then the day should increment
+        if (newHour >= 24) {
+            onDayChange();
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public bool IncrementTimyByMinutes(int deltaM) {
+        int newMinute = minute + deltaM;
+        int newHour = hour + newMinute / 60;
+
+        minute = newMinute % 60;
+        hour = newHour % 24;
+
+        //if there's more than 24 hours, then the day should increment
+        return newHour / 24 > 0;
+    }
+    public bool IncrementTimyByMinutes(int deltaM, Action onDayChange) {
+        int newMinute = minute + deltaM;
+        int newHour = hour + newMinute / 60;
+
+        minute = newMinute % 60;
+        hour = newHour % 24;
+
+        //if there's more than 24 hours, then the day should increment
+        if (newHour > 24) {
+            onDayChange();
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public bool IncrementTimyByHours(int deltaH) {
+        int newHour = hour + deltaH;
+        
+        hour = newHour % 24;
+
+        //if there's more than 24 hours, then the day should increment
+        return newHour / 24 > 0;
+    }
+    public bool IncrementTimyByHours(int deltaH, Action onDayChange) {
+        int newHour = hour + deltaH;
+
+        hour = newHour % 24;
+
+        //if there's more than 24 hours, then the day should increment
+        if (newHour > 24) {
+            onDayChange();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public string ToString() {
+        return hour + ":" + (minute / 10) + (minute % 10) + ":" + (second / 10) + (second % 10);
+    }
 }

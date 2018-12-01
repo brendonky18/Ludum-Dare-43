@@ -6,7 +6,7 @@ using UnityEngine;
 public class Today : MonoBehaviour {
     public GameObject calendarFrame;
 
-    public Date defaultStartDate = Calendar.JUNIOR_YEAR_HS_START;//by default starts on the first day of Junior year
+    public Date defaultStartDate = Calendar.JUNIOR_YEAR_HS_START.Yesterday;//by default starts on the first day of Junior year
 
     private static Today instance;
     public static Today Instance {
@@ -30,7 +30,10 @@ public class Today : MonoBehaviour {
     }//Always use this, it will update the calendar display
     public Time Time {
         get { return time; }
-        protected set { time = value; }
+        protected set {
+            Debug.Log("Time: " + value.ToString());
+            time = value;
+        }
     }
 
     //callback for when the date changes to the next day
@@ -48,18 +51,34 @@ public class Today : MonoBehaviour {
             Today.Instance = this;
         else
             Debug.LogError("Something is already assigned to Today.Instance");
+
+        //update the date when the day changes
+        OnDayChange = () => {
+            Date = date.Tomorrow;
+        };
     }
 
     //initializes current date and time
     void Start() {
-        time = Time.Midnight;
+        Time = Time.Midnight;
         Date = defaultStartDate;
-        Date = defaultStartDate.Tomorrow;
-        Date = new Date(2020, 2, 29);
-        Date = date.Tomorrow;
     }
 
 
     // Update is called once per frame
+    void Update() {
+        //how many in-game seconds elaspe each irl second
+        UpdateTime(60);
+    }
 
+    private float deltaTime = 0;
+    private void UpdateTime(int timeIncrement) {
+        deltaTime += UnityEngine.Time.deltaTime;
+
+        if(deltaTime >= 1) {
+            Today.Instance.Time.IncrementTimyBySeconds(timeIncrement, onDayChange);
+            Debug.Log(Today.Instance.Time.ToString());
+            deltaTime--;
+        }
+    }
 }
