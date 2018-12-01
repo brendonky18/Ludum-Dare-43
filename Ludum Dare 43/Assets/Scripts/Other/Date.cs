@@ -11,9 +11,9 @@ public class Date {
         IS_LEAP_YEAR = isLeapYear;
     }
 
-    //if leap year is not specified, it is assumed to be false
-    public Date(int year, int month, int day) : this(year, month, day, false) { }
-
+    //if leap year is not specified, it is assumed to be a leap year when divisible by 4
+    public Date(int year, int month, int day) : this(year, month, day, year % 4 == 0) { }
+    public Date(int year, int month) : this(year, month, 1) { }
     private static Dictionary<Month, int> monthCode = new Dictionary<Month, int> {
         {Month.Jan, 6 },
         {Month.Feb, 2 },
@@ -84,7 +84,7 @@ public class Date {
             return monthCode[month];
         }
     }
-
+    //year code for calculating day of the week
     public static int YearCode(int year) {
         if (year < 2000 || year > 2052) {
             Debug.LogError("Year asked for is out of range");
@@ -97,12 +97,16 @@ public class Date {
         //if is a leap year and is looking for feb, thenreturn 29, else look up in dictionary
         return isLeapYear && month == Month.Feb ? 29 : monthDays[month];
     }
-
+    public static int MonthDays(Month month) {
+        //if is a leap year and is looking for feb, thenreturn 29, else look up in dictionary
+        return monthDays[month];
+    }
     public static int MonthDays(Date date) {
         //if is a leap year and is looking for feb, thenreturn 29, else look up in dictionary
         return date.YEAR % 4 == 0 && (Month)date.MONTH == Month.Feb ? 29 : monthDays[(Month)date.MONTH]; //shouldn't have to deal with the fact that every 100 years isn't a leap year but 500 years is a leap year
     }
 
+    //formula based off of this: http://gmmentalgym.blogspot.com/2011/03/day-of-week-for-any-date-revised.html#ndatebasics
     public static Day DayOfWeek(Date date) {
         return (Day) ((YearCode(date.YEAR) + MonthCode((Month)date.MONTH, date.IS_LEAP_YEAR) + date.DAY) % 7);
     }
@@ -127,7 +131,6 @@ public class Date {
                 return "Something went wrong here";
         }
     }
-
     public static string MonthString(Month month) {
         switch (month) {
             case Month.Jan:
@@ -164,4 +167,76 @@ public class Date {
     public readonly int YEAR;
     public readonly int MONTH;
     public readonly int DAY;
+
+
+    public static Date RandomThisYear {
+        get {
+            int randomMonth = Random.Range(Today.Instance.Date.MONTH, 13);
+
+            return new Date(
+                Today.Instance.Date.YEAR,
+                (int)randomMonth,
+                Random.Range(1, MonthDays(new Date(Today.Instance.Date.YEAR, randomMonth, 1)) + 1)
+            );
+        }
+    }
+    public static Date RandomThisMonth {
+        get {
+
+            return new Date(
+                Today.Instance.Date.YEAR,
+                Today.Instance.Date.MONTH,
+                Random.Range(Today.Instance.Date.DAY, MonthDays(Today.Instance.Date) + 1)
+            );
+        }
+    }
+
+    //probably doesn't work for leap years
+    public Date Yesterday {
+        get {
+            int newDay;
+            int newMonth;
+            int newYear;
+
+            if(DAY == 1) {
+                if (MONTH == 1) {
+                    newMonth = 1;
+                    newYear = YEAR - 1;
+                } else {
+                    newMonth = MONTH - 1;
+                    newYear = YEAR;
+                }
+                newDay = Date.MonthDays(new Date(newYear, newMonth));
+            } else {
+                newDay = DAY - 1;
+                newMonth = MONTH;
+                newYear = YEAR;
+            }
+            return new Date(newYear, newMonth, newDay);
+
+        }
+    }
+    public Date Tomorrow {
+        get {
+            int newDay;
+            int newMonth;
+            int newYear;
+
+            if (DAY == Date.MonthDays(new Date(YEAR, MONTH))) {
+                if (MONTH == 12) {
+                    newMonth = 1;
+                    newYear = YEAR + 1;
+                } else {
+                    newMonth = MONTH + 1;
+                    newYear = YEAR;
+                }
+                newDay = 1;
+            } else {
+                newDay = DAY + 1;
+                newMonth = MONTH;
+                newYear = YEAR;
+            }
+            return new Date(newYear, newMonth, newDay);
+        }
+    }
 }

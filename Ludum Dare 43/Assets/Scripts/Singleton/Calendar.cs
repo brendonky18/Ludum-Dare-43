@@ -4,6 +4,13 @@ using UnityEngine;
 
 //Keeps track of the different things you have planned
 public class Calendar : MonoBehaviour {
+    private static Calendar instance;
+    public static Calendar Instance {
+        get { return instance; }
+        protected set { instance = value; }
+    }
+
+
     //start dates for school
     public static readonly Date JUNIOR_YEAR_HS_START = new Date(2019, 9, 3);
     public static readonly Date SENIOR_YEAR_HS_START = new Date(2020, 9, 8);
@@ -11,8 +18,6 @@ public class Calendar : MonoBehaviour {
     public static readonly Date SOPHOMORE_YEAR_CO_START = new Date(2022, 9, 6);
     public static readonly Date JUNIOR_YEAR_CO_START = new Date(2023, 9, 5);
     public static readonly Date SENIOR_YEAR_CO_START = new Date(2024, 9, 3);
-
-    public static Calendar Instance;
 
     private static Dictionary<Date, CalendarEvent> events = new Dictionary<Date, CalendarEvent>();
 
@@ -28,6 +33,7 @@ public class Calendar : MonoBehaviour {
     public void AddEvent(CalendarEvent newEvent){
         events.Add(newEvent.StartDate, newEvent);
     }
+
 
     
 }
