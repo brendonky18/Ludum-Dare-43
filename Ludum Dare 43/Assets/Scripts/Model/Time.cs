@@ -134,7 +134,7 @@ public class Time {
         //if there's more than 24 hours, then the day should increment
         return newHour / 24 > 0;
     }
-    public bool IncrementTimyBySeconds(int deltaS, Action onDayChange) {
+    public bool IncrementTimyBySeconds(int deltaS, Action changeToTomorrow) {
         int newSecond = second + deltaS;
         int newMinute = minute + newSecond / 60;
         int newHour = hour + newMinute / 60;
@@ -145,7 +145,7 @@ public class Time {
 
         //if there's more than 24 hours, then the day should increment
         if (newHour >= 24) {
-            onDayChange();
+            changeToTomorrow();
             return true;
         } else {
             return false;
@@ -161,7 +161,7 @@ public class Time {
         //if there's more than 24 hours, then the day should increment
         return newHour / 24 > 0;
     }
-    public bool IncrementTimyByMinutes(int deltaM, Action onDayChange) {
+    public bool IncrementTimyByMinutes(int deltaM, Action changeToTomorrow) {
         int newMinute = minute + deltaM;
         int newHour = hour + newMinute / 60;
 
@@ -170,7 +170,7 @@ public class Time {
 
         //if there's more than 24 hours, then the day should increment
         if (newHour > 24) {
-            onDayChange();
+            changeToTomorrow();
             return true;
         } else {
             return false;
@@ -184,14 +184,14 @@ public class Time {
         //if there's more than 24 hours, then the day should increment
         return newHour / 24 > 0;
     }
-    public bool IncrementTimyByHours(int deltaH, Action onDayChange) {
+    public bool IncrementTimyByHours(int deltaH, Action changeToTomorrow) {
         int newHour = hour + deltaH;
 
         hour = newHour % 24;
 
         //if there's more than 24 hours, then the day should increment
         if (newHour > 24) {
-            onDayChange();
+            changeToTomorrow();
             return true;
         } else {
             return false;
@@ -200,5 +200,17 @@ public class Time {
 
     public string ToString() {
         return hour + ":" + (minute / 10) + (minute % 10) + ":" + (second / 10) + (second % 10);
+    }
+
+    public bool IsGreaterThan(Time t) {
+        //I COULD make this a single boolean statement but it makes more sense this way
+        if (Hour < t.Hour)
+            return false;
+        else if (Minute < t.Minute)
+            return false;
+        else if (Second < t.Second)
+            return false;
+        else
+            return true;
     }
 }

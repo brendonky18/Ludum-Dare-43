@@ -3,14 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Date {
-
     public Date(int year, int month, int day, bool isLeapYear){
         YEAR = year;
         MONTH = month;
         DAY = day;
         IS_LEAP_YEAR = isLeapYear;
     }
-
     //if leap year is not specified, it is assumed to be a leap year when divisible by 4
     public Date(int year, int month, int day) : this(year, month, day, year % 4 == 0) { }
     public Date(int year, int month) : this(year, month, 1) { }
@@ -239,7 +237,29 @@ public class Date {
         }
     }
 
+    public Date NextYear {
+        get {
+            return new Date(YEAR + 1, MONTH, DAY);
+        }
+    }
     public string ToString() {
         return YEAR + "-" + MONTH + "-" + DAY;
+    }
+
+
+
+    //so the comparison stuff works
+
+    public override bool Equals(object obj) {
+        var other = obj as Date;
+
+        if (other == null)
+            return false;
+        else
+            return (this.YEAR == other.YEAR) && (this.MONTH == other.MONTH) && (this.DAY == other.DAY);
+    }
+
+    public override int GetHashCode() {
+        return this.YEAR.GetHashCode() + this.MONTH.GetHashCode() + this.DAY.GetHashCode();
     }
 }
