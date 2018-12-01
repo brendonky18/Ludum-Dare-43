@@ -85,7 +85,7 @@ public class Time {
     public Time RandomTime {
         get {
             return new Time(
-                Random.Range(0, 24)    
+                UnityEngine.Random.Range(0, 24)    
             );
         }
     }

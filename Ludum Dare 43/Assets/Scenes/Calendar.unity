@@ -1011,8 +1011,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 616875355}
+  - component: {fileID: 616875356}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: CalendarEvents
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1031,6 +1032,17 @@ Transform:
   m_Father: {fileID: 2062777722}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &616875356
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 616875354}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7326d84d2ec9c5f43899fe53581d23a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &708080154
 GameObject:
   m_ObjectHideFlags: 0
@@ -2407,6 +2419,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2062777722}
   - component: {fileID: 2062777721}
+  - component: {fileID: 2062777723}
   m_Layer: 0
   m_Name: World
   m_TagString: Untagged
@@ -2440,6 +2453,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2062777723
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2062777720}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1de9ad5e0ac530342afd02d4e62a11ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  calendarFrame: {fileID: 1156026827}
 --- !u!1 &2096879788
 GameObject:
   m_ObjectHideFlags: 0

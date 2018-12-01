@@ -28,7 +28,6 @@ public class Date {
         {Month.Nov, 2 },
         {Month.Dec, 4 },
     };
-
     private static Dictionary<Month, int> leapYearMonthCode = new Dictionary<Month, int> {
         {Month.Jan, 5 },
         {Month.Feb, 1 },
@@ -108,7 +107,7 @@ public class Date {
 
     //formula based off of this: http://gmmentalgym.blogspot.com/2011/03/day-of-week-for-any-date-revised.html#ndatebasics
     public static Day DayOfWeek(Date date) {
-        return (Day) ((YearCode(date.YEAR) + MonthCode((Month)date.MONTH, date.IS_LEAP_YEAR) + date.DAY) % 7);
+        return (Day) ((YearCode(date.YEAR) + MonthCode((Month)date.MONTH, date.IS_LEAP_YEAR) + 1) % 7);
     }
 
     public static string DayString(Day day) {
@@ -191,7 +190,7 @@ public class Date {
         }
     }
 
-    //probably doesn't work for leap years
+    //TODO: probably doesn't work for leap years, we'll check that out eventually
     public Date Yesterday {
         get {
             int newDay;
@@ -238,5 +237,9 @@ public class Date {
             }
             return new Date(newYear, newMonth, newDay);
         }
+    }
+
+    public string ToString() {
+        return YEAR + "-" + MONTH + "-" + DAY;
     }
 }

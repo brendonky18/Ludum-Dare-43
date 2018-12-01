@@ -16,15 +16,13 @@ public class CalendarLayout : MonoBehaviour {
     private GridLayoutGroup gridLayoutGroup;
     private RectTransform rectTransform;
 
-    private void Start() {
+    void Awake() {
         calendarDateFrames = new GameObject[CALENDAR_SIZE];
 
         for (int i = 0; i < CALENDAR_SIZE; i++) {
             calendarDateFrames[i] = Instantiate(calendarDateFramePrefab, calendarBody.transform);
             calendarDateFrames[i].name = "" + i;
         }
-
-        DisplayDate(new Date(2004, 1, 1, true));
     }
 
     void Update() {
@@ -35,6 +33,7 @@ public class CalendarLayout : MonoBehaviour {
     }
 
     public void DisplayDate(Date date) {
+        Debug.Log("Calendar UI updated");
         Day startDay = Date.DayOfWeek(date);
 
         calendarHeader.GetComponentInChildren<Text>().text = Date.MonthString((Month)date.MONTH) + " " + date.YEAR;
