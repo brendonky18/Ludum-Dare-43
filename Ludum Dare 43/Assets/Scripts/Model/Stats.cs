@@ -4,5 +4,5 @@ using UnityEngine;
 
 public enum Stats {
     //all the stats that I could think of
-    Debt, Family, Friends, Grades, Happiness, Health, Money, SocialLife, Stress
+    Family, Friends, Grades, Happiness, Health, Money, Relationship, SocialLife, Stress
 }
