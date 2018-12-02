@@ -168,12 +168,12 @@ public class Date {
 
     public static Date RandomThisYear {
         get {
-            int randomMonth = Random.Range(Today.Instance.Date.MONTH, 13);
+            int randomMonth = Random.Range(World.Instance.Date.MONTH, 13);
 
             return new Date(
-                Today.Instance.Date.YEAR,
+                World.Instance.Date.YEAR,
                 (int)randomMonth,
-                Random.Range(1, MonthDays(new Date(Today.Instance.Date.YEAR, randomMonth, 1)) + 1)
+                Random.Range(1, MonthDays(new Date(World.Instance.Date.YEAR, randomMonth, 1)) + 1)
             );
         }
     }
@@ -181,9 +181,9 @@ public class Date {
         get {
 
             return new Date(
-                Today.Instance.Date.YEAR,
-                Today.Instance.Date.MONTH,
-                Random.Range(Today.Instance.Date.DAY, MonthDays(Today.Instance.Date) + 1)
+                World.Instance.Date.YEAR,
+                World.Instance.Date.MONTH,
+                Random.Range(World.Instance.Date.DAY, MonthDays(World.Instance.Date) + 1)
             );
         }
     }

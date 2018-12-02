@@ -8,7 +8,7 @@ public class CalendarLayout : MonoBehaviour {
 
     public GameObject calendarBody;
 
-    public GameObject calendarHeader;
+    public GameObject calendarHeaderText;
 
     public GameObject calendarDateFramePrefab;
     private GameObject[] calendarDateFrames;
@@ -17,11 +17,12 @@ public class CalendarLayout : MonoBehaviour {
     private RectTransform rectTransform;
 
     void Awake() {
+        Debug.Log("CalendarLayout.Awake()");
         calendarDateFrames = new GameObject[CALENDAR_SIZE];
 
         for (int i = 0; i < CALENDAR_SIZE; i++) {
             calendarDateFrames[i] = Instantiate(calendarDateFramePrefab, calendarBody.transform);
-            calendarDateFrames[i].name = "" + i;
+            calendarDateFrames[i].name = "Calendar Date Frame " + i;
         }
     }
 
@@ -33,9 +34,10 @@ public class CalendarLayout : MonoBehaviour {
     }
 
     public void DisplayDate(Date date) {
+        Debug.Log("CalendarLayout.DisplayDate()");
         Day startDay = Date.DayOfWeek(date);
 
-        calendarHeader.GetComponentInChildren<Text>().text = Date.MonthString((Month)date.MONTH) + " " + date.YEAR;
+        calendarHeaderText.GetComponent<Text>().text = Date.MonthString((Month)date.MONTH) + " " + date.YEAR;
 
         //sets up date frames
         for(int i = 0; i < (int) startDay; i++) {
@@ -43,6 +45,7 @@ public class CalendarLayout : MonoBehaviour {
         }
 
         for (int i = 0; i < Date.MonthDays(date); i++) {
+            Debug.Log(calendarDateFrames[i + (int)startDay].name);
             calendarDateFrames[i + (int)startDay].transform.GetChild(0).GetComponentInChildren<Text>().text =
                 Date.DayString((Day)((i + (int)startDay) % 7)) + "\n" + (i + 1);
         }

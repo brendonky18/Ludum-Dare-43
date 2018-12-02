@@ -10,6 +10,6 @@ public class GridResize : MonoBehaviour {
         RectTransform container = gameObject.GetComponent<RectTransform>();
         GridLayoutGroup grid = gameObject.GetComponent<GridLayoutGroup>();
 
-        grid.cellSize = new Vector2(container.rect.width / width, container.rect.height / height);
+        grid.cellSize = new Vector2(container.rect.width / width - 1, container.rect.height / height - 1);
     }
 }
