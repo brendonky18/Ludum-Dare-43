@@ -29,13 +29,17 @@ public class PhoneController : MonoBehaviour {
         //sets the correct sprite
         Screen = setScreen;
         //deactivates all the other screens
-        for (PhoneScreen i = 0; i < PhoneScreen.Notification; i++) {
+        for (PhoneScreen i = 0; i <= PhoneScreen.Clock; i++) {
             getScreen[(int)i].SetActive(i == setScreen);
         }
     }
 
     public void LockScreen() {
         SwitchToScreen(PhoneScreen.Locked);
+    }
+
+    public void UnlockScreen() {
+        SwitchToScreen(PhoneScreen.Clock);
     }
 
     public void ReceiveMessage(string sender, TextMessage message) {

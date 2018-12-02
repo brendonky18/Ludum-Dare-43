@@ -3,5 +3,5 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum PhoneScreen {
-    Locked, Message, Notification
+    Locked, Message, Notification, Clock
 }
