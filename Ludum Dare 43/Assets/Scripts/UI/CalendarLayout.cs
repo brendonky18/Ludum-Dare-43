@@ -35,7 +35,7 @@ public class CalendarLayout : MonoBehaviour {
     public void DisplayDate(Date date) {
         Day startDay = Date.DayOfWeek(date);
 
-        calendarHeader.GetComponentInChildren<Text>().text = Date.MonthString((Month)date.MONTH) +   + date.YEAR;
+        calendarHeader.GetComponentInChildren<Text>().text = Date.MonthString((Month)date.MONTH) + " " + date.YEAR;
 
         //sets up date frames
         for(int i = 0; i < (int) startDay; i++) {
