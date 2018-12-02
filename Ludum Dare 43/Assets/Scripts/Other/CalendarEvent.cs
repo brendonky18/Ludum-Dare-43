@@ -64,6 +64,9 @@ public class CalendarEvent {
 
     private string eventName = "event";
     private bool isHidden = false;
+    public bool IsHidden {
+        get { return isHidden; }
+    }
 
     public CalendarEvent(Date startDate, Date endDate, Time startTime, Time endTime) {
         this.StartDate = startDate;
@@ -93,6 +96,18 @@ public class CalendarEvent {
     }
 
     public string ToString() {
-        return eventName + " from " + startDate.ToString() + " to " + endDate.ToString();
+
+        string returnString = "";
+        //all day
+        if (isHidden) { //hidden event
+            returnString = "(hidden event) " + eventName;
+        } else if (startTime.Equals(Time.Midnight) && endTime.Equals(Time.EndOfDay)) { //all day
+            returnString = eventName;
+        } else if( startTime == endTime) { //single event
+            returnString = eventName;
+        } else {
+            returnString = "(" + startTime.ToString() + ") " + eventName;
+        }
+        return returnString;
     }
 }

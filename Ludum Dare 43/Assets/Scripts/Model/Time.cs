@@ -199,7 +199,7 @@ public class Time {
     }
 
     public string ToString() {
-        return hour + ":" + (minute / 10) + (minute % 10) + ":" + (second / 10) + (second % 10);
+        return hour + ":" + (minute / 10) + (minute % 10);// + ":" + (second / 10) + (second % 10);
     }
 
     public bool IsGreaterThan(Time t) {
@@ -212,5 +212,18 @@ public class Time {
             return false;
         else
             return true;
+    }
+
+    public override bool Equals(object obj) {
+        var other = obj as Time;
+
+        if (other == null)
+            return false;
+        else
+            return (this.Hour == other.Hour) && (this.Minute == other.Minute) && (this.Second == other.Second);
+    }
+
+    public override int GetHashCode() {
+        return this.Hour.GetHashCode() + this.Minute.GetHashCode() + this.Second.GetHashCode();
     }
 }

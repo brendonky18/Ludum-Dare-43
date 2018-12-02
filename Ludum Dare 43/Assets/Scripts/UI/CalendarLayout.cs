@@ -6,12 +6,12 @@ using UnityEngine.UI;
 public class CalendarLayout : MonoBehaviour {
     public readonly int CALENDAR_SIZE = 42;
 
-    public GameObject calendarBody;
-
-    public GameObject calendarHeaderText;
+    public GameObject calendarFrame, calendarBody, calendarHeaderText, calendarHeader;
 
     public GameObject calendarDateFramePrefab;
     private GameObject[] calendarDateFrames;
+
+    public GameObject eventFlagPrefab;
 
     private GridLayoutGroup gridLayoutGroup;
     private RectTransform rectTransform;
@@ -25,11 +25,27 @@ public class CalendarLayout : MonoBehaviour {
         }
     }
 
-    void Update() {
-        gridLayoutGroup = calendarBody.GetComponent<GridLayoutGroup>();   
+    private void Start() {
+        //refresh the UI
+        calendarBody.GetComponent<LayoutElement>().ignoreLayout = true;
+        calendarBody.GetComponent<LayoutElement>().ignoreLayout = false;
+
+
+        gridLayoutGroup = calendarBody.GetComponent<GridLayoutGroup>();
         rectTransform = calendarBody.GetComponent<RectTransform>();
 
-        gridLayoutGroup.cellSize = new Vector2(rectTransform.rect.width / 7f, rectTransform.rect.height / 6f);
+        float calendarBodyHeight = Screen.height * (49f / 57f);
+        float calendarBodyWidth = Screen.height;
+
+        gridLayoutGroup.cellSize = new Vector2(calendarBodyWidth / 7f, calendarBodyWidth / 7f);
+    }
+
+    void Update() {
+        float totalTime = 0.25f;
+        Vector3 displacement = Vector3.Lerp(Vector3.zero, verticalOffset, UnityEngine.Time.deltaTime / totalTime);
+        if(UnityEngine.Time.time <= startTime + totalTime) {
+            calendarFrame.GetComponent<RectTransform>().position += displacement;
+        }
     }
 
     public void DisplayDate(Date date) {
@@ -45,10 +61,33 @@ public class CalendarLayout : MonoBehaviour {
         for (int i = 0; i < Date.MonthDays(date); i++) {
             calendarDateFrames[i + (int)startDay].transform.GetChild(0).GetChild(0).GetComponentInChildren<Text>().text =
                 Date.DayString((Day)((i + (int)startDay) % 7)) + "\n" + (i + 1);
+
+            GameObject instantiatedEventFlag;
+            foreach (CalendarEvent upcomingEvent in World.Instance.GetEventsStartingOnDay(new Date(date.YEAR, date.MONTH, i + 1))) {
+                if (upcomingEvent.IsHidden == false) {
+                    Debug.Log("instantiating event flag");
+                    instantiatedEventFlag = Instantiate(eventFlagPrefab, calendarDateFrames[i + (int)startDay].transform.GetChild(0));
+                    instantiatedEventFlag.GetComponent<Text>().text = upcomingEvent.ToString();
+                }
+            }
         }
 
         for (int i = Date.MonthDays(date) + (int)startDay; i < CALENDAR_SIZE; i++) {
             calendarDateFrames[i].transform.GetChild(0).GetChild(0).GetComponentInChildren<Text>().text = "";
         }
+    }
+
+    private bool isDocked = false;
+    private float startTime;
+    private Vector3 startPosition;
+    Vector3 verticalOffset;
+    public void DockCalendar() {
+        startTime = UnityEngine.Time.time;
+        if (isDocked)
+            verticalOffset = new Vector3(0f, Screen.height - calendarHeader.GetComponent<RectTransform>().rect.height, 0f);
+        else
+            verticalOffset = new Vector3(0f, calendarHeader.GetComponent<RectTransform>().rect.height - Screen.height, 0f);
+
+        isDocked = !isDocked;
     }
 }

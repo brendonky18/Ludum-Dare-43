@@ -83,6 +83,8 @@ public class World : MonoBehaviour {
             ProcessEvents();
         };
 
+        Date = defaultStartDate;
+
         //initializes events
         InitEvents();
     }
@@ -90,7 +92,7 @@ public class World : MonoBehaviour {
     private void Start() {
         //initializes other variables
         Time = Time.EndOfDay;
-        Date = defaultStartDate;
+        
 
         //TODO: Set up test text message
         //TODO: have test event trigger test message
@@ -152,6 +154,10 @@ public class World : MonoBehaviour {
         }
 
         list.Add(eventToAdd);
+
+        if(eventToAdd.StartDate.MONTH == Instance.Date.MONTH) {
+            //update calendar
+        }
     }
 
     public List<CalendarEvent> GetEventsStartingOnDay(Date date) {
@@ -171,10 +177,15 @@ public class World : MonoBehaviour {
     private CalendarEvent firstDayOfSchool = new CalendarEvent(Calendar.JUNIOR_YEAR_HS_START);
     private CalendarEvent testEvent = new CalendarEvent(Calendar.JUNIOR_YEAR_HS_START);
     void InitEvents() {
-        firstDayOfSchool.SetEventName("First Day of School").RegisterEventAction();
-        testEvent.SetEventName("Test Event").RegisterEventAction(() => {
-            phoneGO.GetComponent<PhoneController>().ReceiveMessage("Totally not a bot", TextMessage.Messages["Test Message"]);
-        }, null);
+        firstDayOfSchool
+            .SetEventName("First Day of School")
+            .RegisterEventAction();
+        testEvent
+            .SetEventName("Test Event")
+            .RegisterEventAction(() => {
+                phoneGO.GetComponent<PhoneController>().ReceiveMessage("Totally not a bot", TextMessage.Messages["Test Message"]);
+            }, null)
+            .SetIsHidden(true);
 
 
         World.Instance.AddEvent(firstDayOfSchool);
