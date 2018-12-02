@@ -113,7 +113,7 @@ public class Time {
         second = newSecond % 60;
         minute = newMinute % 60;
         hour = newHour % 24;
-
+        
         //if there's more than 24 hours, then the day should increment
         if(newHour > 24) {
             onDayChange();
@@ -134,7 +134,7 @@ public class Time {
         //if there's more than 24 hours, then the day should increment
         return newHour / 24 > 0;
     }
-    public bool IncrementTimyBySeconds(int deltaS, Action changeToTomorrow) {
+    public bool IncrementTimeBySeconds(int deltaS, Action changeToTomorrow) {
         int newSecond = second + deltaS;
         int newMinute = minute + newSecond / 60;
         int newHour = hour + newMinute / 60;
@@ -142,7 +142,7 @@ public class Time {
         second = newSecond % 60;
         minute = newMinute % 60;
         hour = newHour % 24;
-
+        
         //if there's more than 24 hours, then the day should increment
         if (newHour >= 24) {
             changeToTomorrow();

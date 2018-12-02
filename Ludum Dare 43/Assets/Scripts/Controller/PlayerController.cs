@@ -53,7 +53,16 @@ public class PlayerController : MonoBehaviour {
         set { playerStats[Stats.Stress] = value; }
     }
 
-    private List<string> allFriends;
-
+    
     [SerializeField] private List<string> firstNames = new List<string>();
+    public List<string> FirstNames {
+        get {
+            return firstNames;
+        }
+
+        set {
+            firstNames = value;
+        }
+    }
+
 }

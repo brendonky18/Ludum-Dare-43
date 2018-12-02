@@ -13,7 +13,10 @@ public class World : MonoBehaviour {
     //</Singleton>
 
     //<Today>
+
+    //GameObject References
     public GameObject calendarFrame;
+    public GameObject phoneGO;
 
     private Date date; //current date
     private Time time; //current time
@@ -31,6 +34,7 @@ public class World : MonoBehaviour {
     public Time Time {
         get { return time; }
         protected set {
+            Debug.Log("Time: " + value.ToString());
             time = value;
         }
     }
@@ -76,14 +80,21 @@ public class World : MonoBehaviour {
             Debug.Log("OnDayChange()");
         };
         OnDayChange = () => {
-            eventsStartingToday = GetEventsStartingOnDay(World.Instance.Date);
+            ProcessEvents();
         };
+
+        //initializes events
+        InitEvents();
     }
 
     private void Start() {
         //initializes other variables
         Time = Time.EndOfDay;
         Date = defaultStartDate;
+
+        //TODO: Set up test text message
+        //TODO: have test event trigger test message
+        //phoneGO.GetComponent<PhoneController>().ReceiveMessage("Totally not a bot", TextMessage.Messages["Test Message"]);
     }
 
 
@@ -91,22 +102,26 @@ public class World : MonoBehaviour {
     void Update() {
         //how many in-game seconds elaspe each irl second
         UpdateTime(60);
-        ProcessEvents();//must be processed after the time has changed
     }
 
     private float deltaTime = 0;
     private void UpdateTime(int timeIncrement) {
         deltaTime += UnityEngine.Time.deltaTime;
 
-        if (deltaTime >= 1) {
-            World.Instance.Time.IncrementTimyBySeconds(timeIncrement, changeToTomorrow);//this should be the only place where onDayChanged can be called
-            deltaTime--;
+        if (deltaTime >= 1f / timeIncrement) {
+            World.Instance.Time.IncrementTimeBySeconds(1, changeToTomorrow);//this should be the only place where onDayChanged can be called
+            deltaTime -= 1f / timeIncrement;
         }
     }
 
     public void ProcessEvents() {
+        Debug.Log("ProcessEvents()");
+        eventsStartingToday = GetEventsStartingOnDay(World.Instance.Date);
+
+        Debug.Log(eventsStartingToday.Count + " events starting today");
         //start the events which need to be started
         foreach (CalendarEvent curEvent in eventsStartingToday) {
+            Debug.Log(curEvent.ToString() + " is starting today");
             if (World.Instance.Time.IsGreaterThan(curEvent.StartTime)) {
                 ongoingEvents.Add(curEvent);//add to ongoing events
                 curEvent.StartEvent();
@@ -149,5 +164,20 @@ public class World : MonoBehaviour {
     }
     public void UpdateEventsToday() {
         eventsStartingToday = GetEventsStartingOnDay(World.Instance.Date);
+    }
+
+
+    //initialize events
+    private CalendarEvent firstDayOfSchool = new CalendarEvent(Calendar.JUNIOR_YEAR_HS_START);
+    private CalendarEvent testEvent = new CalendarEvent(Calendar.JUNIOR_YEAR_HS_START);
+    void InitEvents() {
+        firstDayOfSchool.SetEventName("First Day of School").RegisterEventAction();
+        testEvent.SetEventName("Test Event").RegisterEventAction(() => {
+            phoneGO.GetComponent<PhoneController>().ReceiveMessage("Totally not a bot", TextMessage.Messages["Test Message"]);
+        }, null);
+
+
+        World.Instance.AddEvent(firstDayOfSchool);
+        World.Instance.AddEvent(testEvent);
     }
 }
