@@ -36,13 +36,15 @@ public class Time {
         }
     }
 
-    private bool isPM;
+    public bool isPM;
 
     public Time TwelveHourTime {
         get {
             if (Hour == 0)
                 return new Time(12, Minute, Second, false);
-            else if(Hour >= 12)
+            else if(hour == 12)
+                return new Time(12, Minute, Second, true);
+            else if(Hour > 12)
                 return new Time(Hour - 12, Minute, Second, true);
             else
                 return new Time(Hour, Minute, Second, false);
@@ -122,7 +124,7 @@ public class Time {
             return false;
         }
     }
-    public bool IncrementTimyBySeconds(int deltaS) {
+    public void IncrementTimyBySeconds(int deltaS) {
         int newSecond = second + deltaS;
         int newMinute = minute + newSecond / 60;
         int newHour = hour + newMinute / 60;
@@ -130,9 +132,6 @@ public class Time {
         second = newSecond % 60;
         minute = newMinute % 60;
         hour = newHour % 24;
-
-        //if there's more than 24 hours, then the day should increment
-        return newHour / 24 > 0;
     }
     public bool IncrementTimeBySeconds(int deltaS, Action changeToTomorrow) {
         int newSecond = second + deltaS;
@@ -151,17 +150,14 @@ public class Time {
             return false;
         }
     }
-    public bool IncrementTimyByMinutes(int deltaM) {
+    public void IncrementTimyByMinutes(int deltaM) {
         int newMinute = minute + deltaM;
         int newHour = hour + newMinute / 60;
 
         minute = newMinute % 60;
         hour = newHour % 24;
-
-        //if there's more than 24 hours, then the day should increment
-        return newHour / 24 > 0;
     }
-    public bool IncrementTimyByMinutes(int deltaM, Action changeToTomorrow) {
+    public bool IncrementTimeByMinutes(int deltaM, Action changeToTomorrow) {
         int newMinute = minute + deltaM;
         int newHour = hour + newMinute / 60;
 
@@ -169,28 +165,25 @@ public class Time {
         hour = newHour % 24;
 
         //if there's more than 24 hours, then the day should increment
-        if (newHour > 24) {
+        if (newHour >= 24) {
             changeToTomorrow();
             return true;
         } else {
             return false;
         }
     }
-    public bool IncrementTimyByHours(int deltaH) {
+    public void IncrementTimeByHours(int deltaH) {
         int newHour = hour + deltaH;
         
         hour = newHour % 24;
-
-        //if there's more than 24 hours, then the day should increment
-        return newHour / 24 > 0;
     }
-    public bool IncrementTimyByHours(int deltaH, Action changeToTomorrow) {
+    public bool IncrementTimeByHours(int deltaH, Action changeToTomorrow) {
         int newHour = hour + deltaH;
 
         hour = newHour % 24;
 
         //if there's more than 24 hours, then the day should increment
-        if (newHour > 24) {
+        if (newHour >= 24) {
             changeToTomorrow();
             return true;
         } else {
@@ -204,14 +197,13 @@ public class Time {
 
     public bool IsGreaterThan(Time t) {
         //I COULD make this a single boolean statement but it makes more sense this way
-        if (Hour < t.Hour)
-            return false;
-        else if (Minute < t.Minute)
-            return false;
-        else if (Second < t.Second)
-            return false;
-        else
+        if (Hour > t.Hour)
             return true;
+        else if (Minute > t.Minute) {
+            return true;
+        } else {
+            return Second >= t.Second;
+        }
     }
 
     public override bool Equals(object obj) {

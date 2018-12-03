@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class World : MonoBehaviour {
     //<Singleton>
@@ -15,8 +16,11 @@ public class World : MonoBehaviour {
     //<Today>
 
     //GameObject References
+    public GameObject playerController;
     public GameObject calendarFrame;
     public GameObject phoneGO;
+    public GameObject clockText;
+    public GameObject dateText;
 
     private Date date; //current date
     private Time time; //current time
@@ -34,7 +38,6 @@ public class World : MonoBehaviour {
     public Time Time {
         get { return time; }
         protected set {
-            Debug.Log("Time: " + value.ToString());
             time = value;
         }
     }
@@ -76,44 +79,48 @@ public class World : MonoBehaviour {
             //updates the calendar UI if the year or month has changed, of it it hasn't been initialized yet
             calendarFrame.GetComponent<CalendarLayout>().DisplayDate(Date);
         };
-        OnDayChange = () => {//for debugging
-            Debug.Log("OnDayChange()");
-        };
         OnDayChange = () => {
             ProcessEvents();
         };
+        OnDayChange = () => {
+            dateText.GetComponent<Text>().text = Date.ToString();
+        };
+
 
         Date = defaultStartDate;
-
+        //initializes other variables
+        Time = Time.Midnight;
         //initializes events
         InitEvents();
+        Instance.onDayChange();
     }
 
+    private Time WakeupTime = new Time(7);
     private void Start() {
-        //initializes other variables
-        Time = Time.EndOfDay;
         
-
-        //TODO: Set up test text message
-        //TODO: have test event trigger test message
-        //phoneGO.GetComponent<PhoneController>().ReceiveMessage("Totally not a bot", TextMessage.Messages["Test Message"]);
     }
 
-
+    private int tickSpeed = 1;//672;
+    public int TickSpeed {
+        get { return tickSpeed; }
+        protected set { tickSpeed = value; }
+    }
     // Update is called once per frame
     void Update() {
         //how many in-game seconds elaspe each irl second
-        UpdateTime(60);
+        UpdateTime(TickSpeed);
     }
 
     private float deltaTime = 0;
-    private void UpdateTime(int timeIncrement) {
+    private void UpdateTime(int tickSpeed) {
         deltaTime += UnityEngine.Time.deltaTime;
 
-        if (deltaTime >= 1f / timeIncrement) {
-            World.Instance.Time.IncrementTimeBySeconds(1, changeToTomorrow);//this should be the only place where onDayChanged can be called
-            deltaTime -= 1f / timeIncrement;
+        if (deltaTime >= 1f / tickSpeed) {
+            World.Instance.Time.IncrementTimeByHours(1, changeToTomorrow);//this should be the only place where onDayChanged can be called
+            deltaTime -= 1f / tickSpeed;
         }
+
+        clockText.GetComponent<Text>().text = Instance.Time.TwelveHourTime.ToString() + (Instance.Time.TwelveHourTime.isPM ? " PM" : " AM");
     }
 
     public void ProcessEvents() {
@@ -174,21 +181,51 @@ public class World : MonoBehaviour {
 
 
     //initialize events
-    private CalendarEvent firstDayOfSchool = new CalendarEvent(Calendar.JUNIOR_YEAR_HS_START);
-    private CalendarEvent testEvent = new CalendarEvent(Calendar.JUNIOR_YEAR_HS_START);
+    PhoneController pc;
     void InitEvents() {
+        CalendarEvent firstDayOfSchool = new CalendarEvent();
+        CalendarEvent testEvent = new CalendarEvent();
+        CalendarEvent wakeUp = new CalendarEvent();
+
+        pc = phoneGO.GetComponent<PhoneController>();
+
         firstDayOfSchool
+            .SetDate(Calendar.JUNIOR_YEAR_HS_START)
+            .SetTime(new Time(7, 45))
             .SetEventName("First Day of School")
             .RegisterEventAction();
+
         testEvent
+            .SetDate(Calendar.JUNIOR_YEAR_CO_START)
+            .SetTime(Time.Midnight)
             .SetEventName("Test Event")
             .RegisterEventAction(() => {
-                phoneGO.GetComponent<PhoneController>().ReceiveMessage("Totally not a bot", TextMessage.Messages["Test Message"]);
+                pc.ReceiveTextNotification(TextMessage.Messages["Test Message"]);
+                pc.ReceiveTextNotification(TextMessage.Messages["Test Message"]);
             }, null)
             .SetIsHidden(true);
+        wakeUp
+            .SetDate(Instance.defaultStartDate)
+            .SetTime(WakeupTime)
+            .SetEventName("Alarm")
+            .SetIsHidden(true)
+            .RegisterEventAction(() => {
+                pc.ReceiveNotification(
+                    new Notification(
+                        "Alarm",
+                        "Tap to stop",
+                        () => {
+                            wakeUp = wakeUp.SetDate(World.Instance.Date.Tomorrow).SetTime(WakeupTime);
+                            World.Instance.AddEvent(wakeUp);
+                        }
+                    )
+                );
+            }, null);
+
 
 
         World.Instance.AddEvent(firstDayOfSchool);
-        World.Instance.AddEvent(testEvent);
+        World.Instance.AddEvent(wakeUp);
+        //World.Instance.AddEvent(testEvent);
     }
 }

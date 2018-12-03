@@ -242,6 +242,11 @@ public class Date {
             return new Date(YEAR + 1, MONTH, DAY);
         }
     }
+
+    public Date Forever {
+        get { return new Date(9999, 99, 99); }
+    }
+
     public string ToString() {
         return YEAR + "-" + MONTH + "-" + DAY;
     }
@@ -258,6 +263,17 @@ public class Date {
         else
             return (this.YEAR == other.YEAR) && (this.MONTH == other.MONTH) && (this.DAY == other.DAY);
     }
+
+    public bool IsGreaterThanOrEqualTo(Date other) {
+        if (YEAR > other.YEAR)
+            return true;
+        else if (MONTH > other.MONTH) {
+            return true;
+        } else { 
+            return DAY >= other.DAY;
+        }
+    }
+
 
     public override int GetHashCode() {
         return this.YEAR.GetHashCode() + this.MONTH.GetHashCode() + this.DAY.GetHashCode();

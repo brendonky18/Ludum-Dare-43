@@ -1,16 +1,18 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FlatModifier : MonoBehaviour {
+public class FlatModifier : Modifier {
+    private bool hasNotBeenApplied;
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    public FlatModifier(string name, float value, Stats statModified, Date expirationDate) : base(name, value, statModified, expirationDate) {
+        hasNotBeenApplied = false;
+    }
+
+    public override void ApplyModifier(Action<Stats, float> ModifyStat) {
+        if (hasNotBeenApplied) {
+            ModifyStat(statModified, value);
+        }
+    }
 }

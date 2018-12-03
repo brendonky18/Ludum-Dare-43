@@ -65,7 +65,6 @@ public class CalendarLayout : MonoBehaviour {
             GameObject instantiatedEventFlag;
             foreach (CalendarEvent upcomingEvent in World.Instance.GetEventsStartingOnDay(new Date(date.YEAR, date.MONTH, i + 1))) {
                 if (upcomingEvent.IsHidden == false) {
-                    Debug.Log("instantiating event flag");
                     instantiatedEventFlag = Instantiate(eventFlagPrefab, calendarDateFrames[i + (int)startDay].transform.GetChild(0));
                     instantiatedEventFlag.GetComponent<Text>().text = upcomingEvent.ToString();
                 }

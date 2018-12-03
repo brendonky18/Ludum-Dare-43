@@ -55,6 +55,7 @@ public class CalendarEvent {
         get { return onEnd; }
     }
     public void StartEvent() {
+        Debug.Log(eventName + " has started");
         onStart();
     }
     public void EndEvent() {
@@ -66,6 +67,10 @@ public class CalendarEvent {
     private bool isHidden = false;
     public bool IsHidden {
         get { return isHidden; }
+    }
+
+    public CalendarEvent() {
+
     }
 
     public CalendarEvent(Date startDate, Date endDate, Time startTime, Time endTime) {
@@ -94,6 +99,23 @@ public class CalendarEvent {
         isHidden = hideEvent;
         return this;
     }
+    public CalendarEvent SetDate(Date date) {
+        this.startDate = date;
+        this.endDate = date;
+        return this;
+    }
+    public CalendarEvent SetTime(Time time) {
+        this.StartTime = time;
+        this.EndTime = time;
+
+        return this;
+    }
+    public CalendarEvent SetTime(Time startTime, Time endTime) {
+        this.StartTime = startTime;
+        this.EndTime = endTime;
+        return this;
+    }
+
 
     public string ToString() {
 
